@@ -1,5 +1,6 @@
 import React from 'react';
 import uuid from 'node-uuid';
+import Notes from './Notes.jsx';
 
 class App extends React.Component {
 	constructor(props) {
@@ -30,16 +31,40 @@ class App extends React.Component {
 				task: 'New Task'
 			}])
 		})
+	};
+
+	editNote = (id, task) => {
+		if (!task.trim()) {
+			return;
+		}
+
+		const notes = this.state.notes.map(note => {
+			if(note.id === id && task) {
+				note.task = task;
+			}
+
+			return note;
+		})
+
+		this.setState({notes})
+	};
+
+	deleteNote = (id, e) => {
+		e.stopPropagation();
+
+		this.setState({
+			notes: this.state.notes.filter(note => note.id !== id)
+		})
 	}
 
 	render() {
 		const notes = this.state.notes;
 		return <div>
 			<button onClick={this.addNote}>+</button>
-			<ul>{notes.map(note => 
-				<li key={note.id}>{note.task}</li>
-			)}
-			</ul>
+			<Notes 
+				notes={notes} 
+				onEdit={this.editNote} 
+				onDelete={this.deleteNote} />
 		</div>
 	}
 }
