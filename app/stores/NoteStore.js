@@ -6,22 +6,19 @@ class NoteStore {
   constructor() {
     this.bindActions(NoteActions);
 
-    this.notes = [
-      {
-        id: uuid.v4(),
-        task: 'Learn React'
-      },
-      {
-        id: uuid.v4(),
-        task: 'Do laundry'
-      }
-    ];
+    this.notes = [];
+
+    this.exportPublicMethods({
+    	getNotesByIds: this.getNotesByIds.bind(this)
+    })
   }
 
   create(note) {
     this.setState({
       notes: this.notes.concat(note)
     });
+
+    return note;
   }
 
   update(updatedNote) {
@@ -37,11 +34,16 @@ class NoteStore {
   }
 
   delete(id) {
-  	console.log(id)
     this.setState({
       notes: this.notes.filter(note => note.id !== id)
     });
   }
+
+	getNotesByIds(ids) {
+		console.log(ids)
+		return (ids || []).map(id => this.notes.filter(note => note.id === id)).
+			filter(a => a.length).map(a => a[0])
+	}
 }
 
 
